@@ -1,0 +1,17 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>ANIMA VTS — teste do aparelho</title>
+<style>body{font:15px/1.5 system-ui,sans-serif;background:#120E0F;color:#FFD9B5;padding:20px}b.ok{color:#5ad17a}b.no{color:#E2444C}li{margin:4px 0}</style></head>
+<body><h2>ANIMA VTS — teste do aparelho</h2><p>Tire um print desta tela e mande para o Claude.</p><ul id="r"></ul>
+<script>
+const ul=document.getElementById("r"),add=(t,v)=>{const li=document.createElement("li");li.innerHTML=t+": <b class='"+(v===true?"ok":v===false?"no":"")+"'>"+(v===true?"sim":v===false?"não":v)+"</b>";ul.appendChild(li)};
+(async()=>{
+  add("Aparelho",navigator.userAgent.replace("Mozilla/5.0 ",""));
+  const MR=window.MediaRecorder;add("MediaRecorder",!!MR);
+  if(MR)for(const t of ["video/mp4;codecs=avc1","video/mp4;codecs=hvc1","video/mp4","video/webm;codecs=vp9","video/webm"])add("Gravar "+t,MR.isTypeSupported(t));
+  add("WebCodecs (VideoEncoder)",!!window.VideoEncoder);
+  if(window.VideoEncoder){const base={width:1080,height:1920,bitrate:8e6,framerate:30};
+    for(const [n,c] of [["HEVC","hvc1.1.6.L123.B0"],["H.264","avc1.640028"],["VP9","vp09.00.40.08"]]){
+      for(const alpha of ["discard","keep"]){let ok=false;try{ok=(await VideoEncoder.isConfigSupported({...base,codec:c,alpha})).supported}catch(e){ok=false}
+        add(n+(alpha==="keep"?" COM transparência":" sem transparência"),ok)}}}
+})();
+</script></body></html>
